@@ -17,21 +17,26 @@ var params = {
 var authurl='';
 var authHtml ='';
 
-sagemaker.createPresignedDomainUrl(params, function(err, data) {
+
+
+
+
+
+app.get('/', (req, res) => {
+
+  sagemaker.createPresignedDomainUrl(params, function(err, data) {
+    
   if (err) console.log(err, err.stack); // an error occurred
   else   {
     console.log(data);  
     authurl = data.AuthorizedUrl;
     console.log('authurl:' +authurl);
     authHtml = "<html><head/><body><a href='" +authurl + "'>Open Studio</a>" + "</body></html>";
-	console.log(authHtml);
+    console.log(authHtml);
+
   }           // successful response
 });
 
-
-
-
-app.get('/', (req, res) => {
 	res.send(authHtml);
 });
 
