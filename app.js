@@ -4,7 +4,6 @@ const app = express();
 // Load the SDK and UUID
 var AWS = require('aws-sdk');
 var uuid = require('uuid');
-const SSM = new AWS.SSM({region: 'us-west-2'});
 
 var sagemaker = new AWS.SageMaker({apiVersion: '2017-07-24', region: 'us-west-2'});
 var port = process.env.PORT || 3000
@@ -22,7 +21,7 @@ const ssmClient = new AWS.SSM({
 });
 
 ssmClient.getParameter({
-  Name: `/sagemaker-studio-proxy/dev/studio-domain-name`,
+  Name: '/sagemaker-studio-proxy/dev/studio-domain-name',
   WithDecryption: true,
 }, (err, data) => {
   if (data.Parameter) {
@@ -33,7 +32,7 @@ ssmClient.getParameter({
 });
 
 ssmClient.getParameter({
-  Name: `/sagemaker-studio-proxy/dev/studio-user-profile-name`,
+  Name: '/sagemaker-studio-proxy/dev/studio-user-profile-name',
   WithDecryption: true,
 }, (err, data) => {
   if (data.Parameter) {
