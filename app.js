@@ -4,18 +4,44 @@ const app = express();
 // Load the SDK and UUID
 var AWS = require('aws-sdk');
 var uuid = require('uuid');
+const SSM = new AWS.SSM();
+
 var sagemaker = new AWS.SageMaker({apiVersion: '2017-07-24', region: 'us-west-2'});
 var port = process.env.PORT || 3000
 
-var params = {
-  DomainId: 'd-sg3vrmapgbpv', /* required */
-  UserProfileName: 'rvvittal', /* required */
-  ExpiresInSeconds: '300',
-  SessionExpirationDurationInSeconds: '3000'
-};
+
 
 var authurl='';
 var authHtml ='';
+var paramDomain ='';
+var paramProfile ='';
+
+const ssmClient = new AWS.SSM({
+  apiVersion: '2014-11-06',
+  region: 'us-west-2'
+});
+
+ssmClient.getParameter({
+  Name: `/sagemaker-studio-proxy/dev/studio-domain-name`,
+  WithDecryption: true,
+}, (err, data) => {
+  if (data.Parameter) {
+    console.log(data.Parameter.Value)
+    paramDomain = data.Parameter.Value
+
+  }
+});
+
+ssmClient.getParameter({
+  Name: `/sagemaker-studio-proxy/dev/studio-user-profile-name`,
+  WithDecryption: true,
+}, (err, data) => {
+  if (data.Parameter) {
+    console.log(data.Parameter.Value)
+    paramProfile = data.Parameter.Value
+
+  }
+});
 
 
 
@@ -23,6 +49,17 @@ var authHtml ='';
 
 
 app.get('/', (req, res) => {
+
+  var params = {
+    DomainId: paramDomain , /* required */
+    UserProfileName: paramProfile, /* required */
+    ExpiresInSeconds: '300',
+    SessionExpirationDurationInSeconds: '3000'
+  };
+
+  console.log(params);
+
+
 
   sagemaker.createPresignedDomainUrl(params, function(err, data) {
     
