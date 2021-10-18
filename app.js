@@ -4,7 +4,7 @@ const app = express();
 // Load the SDK and UUID
 var AWS = require('aws-sdk');
 var uuid = require('uuid');
-const SSM = new AWS.SSM();
+const SSM = new AWS.SSM({region: 'us-west-2'});
 
 var sagemaker = new AWS.SageMaker({apiVersion: '2017-07-24', region: 'us-west-2'});
 var port = process.env.PORT || 3000
@@ -42,8 +42,6 @@ ssmClient.getParameter({
 
   }
 });
-
-
 
 
 
